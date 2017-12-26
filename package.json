@@ -1,0 +1,25 @@
+{
+  "name": "meantutorial",
+  "version": "1.0.0",
+  "description": "mean stack application",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "Mean stack"
+  },
+  "author": "varesh",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.18.2",
+    "express": "^4.15.5",
+    "mongo": "^0.1.0",
+    "mongodb": "^2.2.33",
+    "mongoose": "^4.10.8",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.12.1"
+  }
+}

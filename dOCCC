@@ -1,0 +1,8 @@
+to run server on  npm ===== >   
+
+node server.js
+
+
+mongoose:  for mongo db connect to NOde connection 
+Express : WEB API performance framework  Fast, unopinionated, minimalist web framework for Node.js
+nodemon :  watch file change and auto run server on file changes 
