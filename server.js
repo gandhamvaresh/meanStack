@@ -1,16 +1,27 @@
+// Packages -- ussing 
 var express = require('express');
 var app = express();
-var port = process.env.PORT || 8086;
+var port = process.env.PORT || 8089;
 var morgan = require('morgan')
 var mongoose = require('mongoose');
-var User = require('./app/models/user');
 var bodyParser = require('body-parser');
+var router = express.Router();
+var appRoutes = require('./app/routes/api')(router);
+var path = require('path');
+
+
+
+// middle ware using 
+app.use(morgan('dev'));
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(express.static(__dirname + '/public'));
+app.use('/api',appRoutes); // order middle ware should be more imp
 
 
-app.use(morgan('dev'));
 
+
+// mongo DB Connection 
 const dbname = 'mongodb://gvaresh:gvk$3415@ds243295.mlab.com:43295/meanjsva'
 mongoose.connect(dbname, function(err){
 	if(err){
@@ -28,28 +39,18 @@ db.once('open', function() {
 });*/
 mongoose.Promise = global.Promise;
 
-app.get('/home', function(req, res){
-res.send('Mean Hello world from home');
-})
 
-app.post('/users', function(req,res){
-/*res.send('testinmg route');*/
-var user = new User();
-user.username = req.body.username;
-user.password = req.body.password;
-user.email =  req.body.email;
-user.save( function(err){
- if(err){
- 	res.send( 'username or email already exixt')
- }
- else{
- 	res.send(user +  ': values  saved');
- }
+
+// routes ---------------
+app.get('*', function(req, res){
+	console.log(path.join(__dirname + '/public/app/views/index.html'));
+res.sendFile(path.join(__dirname + '/public/app/views/index.html'));
 });
-console.log(user);
-})
-app.listen(port, function(){
-    console.log("Hello MEAN stack  " + port);
-})
 
 
+
+
+// server port 
+app.listen(app.get(port), '127.0.0.1', function() {
+  console.log('app listening on port %d in %s mode', app.get(port), app.get('env'));
+});;

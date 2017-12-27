@@ -1,8 +1,24 @@
 to run server on  npm ===== >   
 
+npm start server.js
+
 node server.js
 
+morgan:  every request will logged  
+
+GET /404
+GET /users
+
+nodemon server.js
 
 mongoose:  for mongo db connect to NOde connection 
 Express : WEB API performance framework  Fast, unopinionated, minimalist web framework for Node.js
 nodemon :  watch file change and auto run server on file changes 
+nodemon server.js
+
+
+
+node_modules
+
+https://github.com/gandhamvaresh/meanStack.git
+
