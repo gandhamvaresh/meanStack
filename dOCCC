@@ -1,5 +1,7 @@
 to run server on  npm ===== >   
 
+npm install pluginName --save
+
 npm start server.js
 
 node server.js
@@ -22,3 +24,6 @@ node_modules
 
 https://github.com/gandhamvaresh/meanStack.git
 
+
+
+https://www.youtube.com/watch?v=vHdhfDpjrkQ&list=PL3vQyqzqjZ637sWpKvniMCxdqZhnMJC1d&index=7

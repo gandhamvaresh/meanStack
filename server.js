@@ -1,8 +1,8 @@
 // Packages -- ussing 
 var express = require('express');
 var app = express();
-var port = process.env.PORT || 8089;
-var morgan = require('morgan')
+var port = process.env.PORT || 8088;
+var morgan = require('morgan');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var router = express.Router();
@@ -37,7 +37,7 @@ db.once('open', function() {
       console.log("Hopppk  " );
 
 });*/
-mongoose.Promise = global.Promise;
+//mongoose.Promise = global.Promise;
 
 
 
@@ -48,9 +48,12 @@ res.sendFile(path.join(__dirname + '/public/app/views/index.html'));
 });
 
 
-
+/*app.get('/', function (req, res) {
+  res.send('hello world')
+})*/
 
 // server port 
-app.listen(app.get(port), '127.0.0.1', function() {
-  console.log('app listening on port %d in %s mode', app.get(port), app.get('env'));
+app.listen(port,  function() {
+	console.log('Running on port' + port)
+  //console.log('app listening on port %d in %s mode', app.get(port), app.get('env'));
 });;
