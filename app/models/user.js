@@ -14,6 +14,7 @@ UserSchema.pre('save', function(next) {
     if(err) return next(err);
     user.password = hash;    // Store hash in your password DB.
    next();
+   
 });
 });
 
