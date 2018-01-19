@@ -18,6 +18,13 @@ UserSchema.pre('save', function(next) {
 });
 });
 
+UserSchema.methods.comparePassword = function(password){
+ // bcrypt.compareSync(myPlaintextPassword, hash); // true
+ var user =this;
+  return bcrypt.compareSync(password, this.password); 
+
+};
+
 /*bcrypt.hash("bacon", null, null, function(err, hash) {
     // Store hash in your password DB.
 });*/

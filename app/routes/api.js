@@ -3,6 +3,7 @@ var User = require('../models/user');
 
 module.exports =function(router) {
 // localhost:8088/api/users
+// USER REGISATION ROUTE
 router.post('/users', function(req,res){
 /*res.send('testinmg route');*/
 console.log('here');
@@ -21,12 +22,36 @@ user.email =  req.body.email;
  }
  else{
  //	res.send(user +  ': values  saved');
- 	res.json({success: true, message:' values saved succesfully' });
+     /*console.log(req.body.username +  ':req.body.username;');
+          console.log(req.body.password +  ':req.body.password;');*/
+    
+ 	res.json({success: true, message:' values saved succesfully','username': req.body.username, "password": req.body.username  });
  }
 });	
     }
 console.log(user);
 });
+
+
+
+router.post('/authenticate', function(req,res){
+     User.findOne({ username: req.body.username}).select('email username password').exec(function(err, user){
+        if (err) throw err;
+        if(!user){
+        	res.json({ success: false, message: 'could not authenticate user',"user": user});
+        }else if(user){
+        var validpassword = user.comparePassword(req.body.password, ) 
+
+          if(!validPassword){
+          	res.json({success: false, message: 'could not authenticate password'});
+          }else{  res.json({success: true, message: 'user validated succesfully'}) 
+                 }
+
+           }
+     });
+
+});
+
 
 return router;
 }
