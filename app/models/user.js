@@ -20,8 +20,8 @@ UserSchema.pre('save', function(next) {
 
 UserSchema.methods.comparePassword = function(password){
  // bcrypt.compareSync(myPlaintextPassword, hash); // true
- var user =this;
-  return bcrypt.compareSync(password, this.password); 
+  var user =this;
+  return bcrypt.compareSync(password, user.password); 
 
 };
 

@@ -1,5 +1,7 @@
 
 var User = require('../models/user');
+var jwt = require('jsonwebtoken');
+var secret = 'ghostRider';
 
 module.exports =function(router) {
 // localhost:8088/api/users
@@ -33,18 +35,25 @@ console.log(user);
 });
 
 
-
+// localhost:8088/api/authenticate
 router.post('/authenticate', function(req,res){
+	 console.log(req.body);
      User.findOne({ username: req.body.username}).select('email username password').exec(function(err, user){
         if (err) throw err;
         if(!user){
-        	res.json({ success: false, message: 'could not authenticate user',"user": user});
+        	res.send({ success: false, message: 'could not authenticate user',"user": user});
         }else if(user){
-        var validpassword = user.comparePassword(req.body.password, ) 
-
-          if(!validPassword){
-          	res.json({success: false, message: 'could not authenticate password'});
-          }else{  res.json({success: true, message: 'user validated succesfully'}) 
+        	if(req.body.password){
+        var validpassword = user.comparePassword(req.body.password);
+          }else{
+          	res.send({success: false, message: 'no pass or enter password'});
+            //next();
+          }
+          if(!validpassword){
+          	res.send({success: false, message: 'could not authenticate password'});
+          }else{ 
+           var token =  jwt.sign({  username: user.username , email: user.email }, secret, { expiresIn: '24h' }); 
+            res.send({success: true, message: 'user validated succesfully', token: token}) 
                  }
 
            }
@@ -52,31 +61,29 @@ router.post('/authenticate', function(req,res){
 
 });
 
+router.use(function(req,res,next){
+  var token = req.body.token || req.body.query || req.headers['x-access-token'];
+  if(token){
+// verify a token symmetric
+jwt.verify(token, secret, function(err, decoded) {
+  if (err) { res.json({success: false, message: " success false token invalid "})}
+    else{ req.decoded  = decoded;
+       next(); }
+  });
+
+  }else{ res.json( {success: false, message: "no token found"} )}
+});
+
+
+
+router.post('/me',function(req,res){
+  res.send(req.decoded);
+});
+
 
 return router;
 }
 
 
-/*
-app.get('/home', function(req, res){
-res.send('Mean Hello world from home');
-})*/
 
-
-/*app.get('/users', function(req,res){
-var user = new User();
-user.username = req.body.username;
-user.password = req.body.password;
-user.email =  req.body.email;
-user.save( function(err){
- if(err){
- 	res.send( 'username or email already exixt')
- }
- else{
- 	res.send(user +  ': values  saved');
- }
-});
-console.log(user);
-})
-*/
 

@@ -9,14 +9,17 @@ angular.module('appRoutes',['ngRoute'])
 		templateUrl: 'app/views/pages/about.html'
      })
 	.when('/register',{
-		templateUrl: 'app/views/pages/register.html',
+		templateUrl: 'app/views/pages/users/register.html',
 		controller: 'regCtrl',
 		controllerAs: 'register'
 
 	})
 	.when('/login', {
-		templateUrl: 'app/views/pages/login.html'
+		templateUrl: 'app/views/pages/users/login.html'
 
+	})
+	.when('/logout' , {
+		templateUrl: 'app/views/pages/users/logout.html'
 	})
 	.otherwise({redirectTo: '/'	});
 

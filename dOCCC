@@ -19,6 +19,7 @@ nodemon :  watch file change and auto run server on file changes
 nodemon server.js
 
 
+npm install jsonwebtoken --save   // session manager 
 
 node_modules
 
