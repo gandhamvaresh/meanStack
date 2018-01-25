@@ -1,41 +1,56 @@
 angular.module('mainController', ['authServices'])
-.controller('mainCtrl', function(Auth,$http,$location,$timeout) {
-	
-  	var app = this;
-    if(Auth.isLoggedIn()) {
-      console.log('logged in');
-    } else { console.log('user is not logged  '); }
+    .controller('mainCtrl', function(Auth, $http, $location, $timeout, $rootScope) {
 
-	this.dologin = function(loginData){
-			console.log('test main ctrl');
-
-        app.loading = true;
-		app.errorMsg= false;
-  // console.log(this.regData);
- Auth.login(app.loginData).then(function(data){;
-    // console.log( data.data.success    + ' userController dddddloading ' + data.data.message);
-              if(data.data.success){
-             app.loading=false;
-              app.successMsg = data.data.message;
-              $timeout(function(){
-              	$location.path('/about');
-              },2000)
-              
-                 }else{
-                 	app.loading=false;
-                  	app.errorMsg = data.data.message;
-                }
+        var app = this;
+        // untill load  this(everyting) dont show others
+        app.loadme = false;
+        // tologin continuly every request 
+        $rootScope.$on('$routeChangeStart', function() {
+            // Is user logged in or not ? 
+            if (Auth.isLoggedIn()) {
+                app.isLoggedIn = true;
+                Auth.getUser().then(function(data) {
+                    app.username = data.data.username;
+                    app.email = data.data.email;
+                    // below line shold wait untill all data loads
+                    app.loadme = true;
+                });
+            } else {
+                // when user not found change username and email to '' 
+                app.isLoggedIn = false;
+                app.username = '';
+                app.email = '';
+                app.loadme = true;
+            }
         });
-};
-this.logout= function(){
-  Auth.logout();
-  $location.path('/logout');{
-     $timeout(function(){
-                $location.path('/');
-              },2000)
-  }
-};
-});
 
+        // mainCtrl as main  // main.dologin
+        this.dologin = function(loginData) {
+            app.loading = true;
+            app.errorMsg = false;
+            Auth.login(app.loginData).then(function(data) {;
+                if (data.data.success) {
+                    app.loading = false;
+                    app.successMsg = data.data.message;
+                    $timeout(function() {
+                        $location.path('/about');
+                        app.loginData = '';
+                        app.successMsg = false;
+                    }, 2000)
 
-	
+                } else {
+                    app.loading = false;
+                    app.errorMsg = data.data.message;
+                }
+            });
+        };
+        // mainCtrl as main  // main.logout
+        this.logout = function() {
+            Auth.logout();
+            $location.path('/logout'); {
+                $timeout(function() {
+                    $location.path('/');
+                }, 2000)
+            }
+        };
+    });
