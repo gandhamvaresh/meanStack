@@ -6,13 +6,19 @@ angular.module('authServices', [])
             return $http.post('/api/authenticate', loginData).then(function(data) {
                 AuthToken.setToken(data.data.token)
                 return data;
-            });       };
+            });
+        };
         //Auth.isLoggedIn()
         authFactory.isLoggedIn = function() {
             if (AuthToken.getToken()) {
                 return true;
             } else { return false; }
         };
+
+        //Auth.facebook()
+        authFactory.facebook = function(token) {
+            AuthToken.setToken(token);
+        }
         //Auth.getUser()
         authFactory.getUser = function() {
             if (AuthToken.getToken()) {

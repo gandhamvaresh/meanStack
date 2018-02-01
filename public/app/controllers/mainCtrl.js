@@ -1,5 +1,5 @@
 angular.module('mainController', ['authServices'])
-    .controller('mainCtrl', function(Auth, $http, $location, $timeout, $rootScope) {
+    .controller('mainCtrl', function(Auth, $http, $location, $timeout, $rootScope, $window) {
 
         var app = this;
         // untill load  this(everyting) dont show others
@@ -22,7 +22,18 @@ angular.module('mainController', ['authServices'])
                 app.email = '';
                 app.loadme = true;
             }
+            if ($location.hash() == '_=_') $location.hash(null);
         });
+
+        this.facebook = function() {
+            $window.location = $window.location.protocol + '//' + $window.location.host + '/auth/facebook'
+        };
+        this.twitter = function() {
+            $window.location = $window.location.protocol + '//' + $window.location.host + '/auth/twitter'
+        };
+        this.google = function() {
+            $window.location = $window.location.protocol + '//' + $window.location.host + '/auth/google'
+        };
 
         // mainCtrl as main  // main.dologin
         this.dologin = function(loginData) {
