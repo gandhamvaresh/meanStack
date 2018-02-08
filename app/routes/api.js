@@ -7,18 +7,45 @@ module.exports = function(router) {
     // USER REGISATION ROUTE
     router.post('/users', function(req, res) {
         /*res.send('testinmg route');*/
-        console.log('here');
+        console.log(req.body);
         var user = new User();
         user.username = req.body.username;
         user.password = req.body.password;
         user.email = req.body.email;
+        user.name = req.body.name;
         if (user.username == "" || user.username == null || user.password == '' || user.password == null || user.email == '' || user.email == null) {
             res.json({ success: false, message: 'check all fields username password email are present' });
         } else {
             user.save(function(err) {
                 if (err) {
-                    res.json({ success: false, message: 'username or email already exixt' });
-                } else {
+                    if (err.errors = !null) {
+                        if (err.errors.name) {
+                            res.json({ success: false, message: err.errors.name.message });
+                        } else if (err.errors.email) {
+                            res.json({ success: false, message: err.errors.email.message });
+                        } else if (err.errors.username) {
+                            res.json({ success: false, message: err.errors.username.message });
+                        } else if (err.errors.password) {
+                            res.json({ success: false, message: err.errors.password.message });
+                        } else {
+                            console.log('here');
+                            res.json({ success: false, message: err });
+                        }
+                    }
+                    // abouve errors validates only there formats 
+                    // below error validates from duplicate exists or other errors from DB
+                    else if (err) {
+                        console.log('here2');
+                        if (err.code == 11000) {
+                            res.json({ success: false, message: 'Username or EMAIl already taken' });
+                        } else {
+                            res.json({ success: false, message: err });
+
+                        }
+                    }
+
+                } // below if everyting ok save success 
+                else {
                     res.json({ success: true, message: ' values saved succesfully', 'username': req.body.username, "password": req.body.username });
                 }
             });
