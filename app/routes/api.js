@@ -54,8 +54,34 @@ module.exports = function(router) {
     });
 
 
-    // localhost:8088/api/authenticate
-    router.post('/authenticate', function(req, res) {
+    // localhost:8088/api/checkusername
+    router.post('/checkusername', function(req, res) {
+        console.log(req.body);
+        User.findOne({ username: req.body.username }).select('username').exec(function(err, user) {
+            if (err) throw err;
+            if (user) {
+                res.json({ success: false, message: 'username already taken' });
+            } else {
+                res.json({ success: true, message: 'valid username' });
+            }
+        });
+
+    });
+    // localhost:8088/api/checkemail
+    router.post('/checkemail', function(req, res) {
+        console.log(req.body);
+        User.findOne({ email: req.body.email }).select('email').exec(function(err, user) {
+            if (err) throw err;
+            if (user) {
+                res.json({ success: false, message: 'email already taken' });
+            } else {
+                res.json({ success: true, message: 'valid email' });
+            }
+        });
+
+    });
+     // localhost:8088/api/authenticate
+     router.post('/authenticate', function(req, res) {
         console.log(req.body);
         User.findOne({ username: req.body.username }).select('email username password').exec(function(err, user) {
             if (err) throw err;
