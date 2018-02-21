@@ -25,7 +25,9 @@
 </div>
 <br>
 <div class='row show-hide-message' ng-show='main.errorMsg'>
-    <div class='alert alert-danger'>{{main.errorMsg}}</div>
+    <div class='alert alert-danger'>{{main.errorMsg}} &nbsp; 
+    <a href='/resend'>    <button type="button" class='btn btn-info'>Resend Activation Link</button></a>
+    </div>
 </div>
 <div class='row show-hide-message' ng-show='facebook.errorMsg'>
     <div class='alert alert-danger'>{{facebook.errorMsg}}</div>

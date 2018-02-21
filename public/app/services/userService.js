@@ -1,4 +1,4 @@
-angular.module('userServices', [])
+angular.module('userServices',  [])
 .factory('User',function($http){
 	userFactory = {};
 	//User.create(regData)
@@ -12,6 +12,10 @@ angular.module('userServices', [])
 	//User.checkemail(regData)
 	userFactory.checkemail = function(regData){
 		return $http.post('/api/checkemail', regData)
+	}
+	//User.activateAccount(token)
+	userFactory.activateAccount = function(token){
+		return  $http.put('/api/activate/'+ token);
 	}
 	return userFactory;
 });

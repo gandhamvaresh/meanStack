@@ -75,6 +75,13 @@ var app = angular.module('appRoutes', ['ngRoute'])
                 authenticated: false
 
             })
+            .when('/activate/:token', {
+                templateUrl: 'app/views/pages/users/activation/activate.html',
+                controller: 'emailCtrl',
+                controllerAs: 'email',
+                authenticated: false
+            })
+
             .otherwise({ redirectTo: '/' });
 
         $locationProvider.html5Mode({
@@ -84,7 +91,7 @@ var app = angular.module('appRoutes', ['ngRoute'])
     });
 app.run(['$rootScope', 'Auth', '$location', function($rootScope, Auth, $location) {
     $rootScope.$on('$routeChangeStart', function(event, next, current) {
-        // console.log(next.$$route.authenticated);
+            console.log(next);
         //  console.log(Auth.isLoggedIn());
         if (next.$$route.authenticated == true) {
             if (!Auth.isLoggedIn()) {
