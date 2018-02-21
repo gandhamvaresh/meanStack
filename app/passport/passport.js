@@ -122,6 +122,5 @@ module.exports = function(app, passport) {
             res.redirect('/google/' + token);
         });;
 
-
     return passport;
 }
