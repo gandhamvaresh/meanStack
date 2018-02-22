@@ -15,8 +15,8 @@ angular.module('authServices', [])
             } else { return false; }
         };
 
-        //Auth.facebook()
-        authFactory.facebook = function(token) {
+        //Auth.socialMedia()
+        authFactory.socialMedia = function(token) {
             AuthToken.setToken(token);
         }
         //Auth.getUser()

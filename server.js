@@ -13,6 +13,7 @@ var social = require('./app/passport/passport')(app, passport);
 
 
 
+
 // middle ware using 
 app.use(morgan('dev'));
 app.use(bodyParser.json()); // for parsing application/json
