@@ -192,7 +192,7 @@ module.exports = function (router) {
                     res.send({ success: false, message: 'please activate your account .. pls check ur Email', expired: true });
                 }
                 else {
-                    var token = jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: '24h' });
+                    var token = jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: '15s' });
                     res.send({ success: true, message: 'user validated succesfully', token: token })
                 }
 
