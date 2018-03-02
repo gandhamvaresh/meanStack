@@ -1,5 +1,5 @@
-angular.module('mainController', ['authServices'])
-    .controller('mainCtrl', function (Auth, $http, $location, $timeout, $rootScope, $window, $interval) {
+angular.module('mainController', ['authServices','userServices'])
+    .controller('mainCtrl', function (Auth, $http, $location, $timeout, $rootScope, $window, $interval,$route,User,AuthToken,User) {
 
         var app = this;
         app.loadme = false;   // untill load  this(everyting) dont show others
@@ -20,12 +20,15 @@ angular.module('mainController', ['authServices'])
                         };
                         var expireTime = self.parseJwt(token); // Save parsed token into variable
                         var timeStamp = Math.floor(Date.now() / 1000); // Get current datetime timestamp
+                        console.log('token     :  '  + timeStamp +'    expired        '+expireTime.exp );
                         var timeCheck = expireTime.exp - timeStamp; // Subtract to get remaining time of token
-                        if (timeCheck <= 0) {
+                        console.log('test ' + timeCheck );
+                        if (timeCheck <= 25) {
+                          console.log('token expired ' );
                             showModal(1); // Open bootstrap modal and let user decide what to do
                             $interval.cancel(interval); // Stop interval
                         }else{
-                            console.log('test not expired' );
+                            console.log('token not yet expired ' );
                         }
                     }
                 }, 2000);
@@ -38,23 +41,30 @@ angular.module('mainController', ['authServices'])
             app.choiceMade = false;
             app.modelHeader = undefined;
             app.modelBody = undefined;
+            app.hideButtons = false;
           
-              if(option ===1 ){
+              if(option === 1 ){
                 app.modelHeader = 'Time out working'
                 app.modelBody = 'your session will expires in 5 min would you like to change session?'
                 $("#myModal").modal({backdrop: "static"});
          
-              }else if(Option === 2 ){
+              }else if(option  === 2 ){
+              app.hideButtons = true;
               app.modelHeader= 'logging out'
               $("#myModal").modal({backdrop: "static"});
-
+             $timeout(function(){
+               Auth.logout();
+               $location.path('/');
+                 hideModal();
+                 $route.reload();
+            }, 2000)
               }
               $timeout(function(){
                 if(!app.choiceMade)
                 hideModal();
                 console.log('Logging Out')
             }, 4000)
-        }
+        };
 
         // Auth.logout();
         // $location.path('/logout'); {
@@ -63,16 +73,25 @@ angular.module('mainController', ['authServices'])
         //     }, 2000)
         // }
 
-         app.renewSession= function(){
+         app.renewSession = function(){
             app.choiceMade = true;
-           console.log('Requsted new session');
+          User.renewSession(app.username).then(function(data){
+              if(data.data.success){
+           AuthToken.setToken(data.data.token);
+           app.checkSession();
+              }else{
+                  app.modelBody = data.data.message;
+              }
+          });
            hideModal();            
          };
 
          app.endSession= function(){
             app.choiceMade = true;
-            console.log('End session');
-            hideModal();             
+            hideModal();
+            $timeout(function(){
+                showModal(2);
+            },1000)             
           }
 
          var hideModal = function(){
