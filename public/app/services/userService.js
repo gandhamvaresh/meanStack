@@ -44,8 +44,11 @@ userFactory.resetUser = function(token) {
 userFactory.savePassword = function(regData) {
 	console.log('service now');
 	return $http.put('/api/savePassword',regData);
-
 };
-	
+//User.renewSession(username)
+	userFactory.renewSession = function(username){
+   return $http.get('/api/renewToken/' + username);
+		
+	}
 	return userFactory;
 });

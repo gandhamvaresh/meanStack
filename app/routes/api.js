@@ -192,7 +192,7 @@ module.exports = function (router) {
                     res.send({ success: false, message: 'please activate your account .. pls check ur Email', expired: true });
                 }
                 else {
-                    var token = jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: '24h' });
+                    var token = jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: '30s' });
                     res.send({ success: true, message: 'user validated succesfully', token: token })
                 }
 
@@ -625,13 +625,25 @@ module.exports = function (router) {
 
             } else { res.json({ success: false, message: "no token found" }) }
         });
-
+    
 
 
         router.post('/me', function (req, res) {
             res.send(req.decoded);
         });
 
+  // Route to provide the user with a new token to renew session
+    router.get('/renewToken/:username', function(req, res) {
+        User.findOne({ username: req.params.username }).select('username email').exec(function(err, user) {
+        if(err) throw err;
+  if(!user){ 
+       res.json({ success: false, message: "no user found found" })
+  }else{
+       var newToken = jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: '24H' });
+       res.send({ success: true, token: newToken })
+  }
+    })
+})
 
         return router;
     }

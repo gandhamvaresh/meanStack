@@ -7,3 +7,4 @@ MLAB- gvaresh - varesh@3415   - portallogin
 
  
 cd D:\Disk\meanTutorial
+32:50 17     
