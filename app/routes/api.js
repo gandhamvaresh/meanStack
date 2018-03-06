@@ -192,7 +192,7 @@ module.exports = function (router) {
                     res.send({ success: false, message: 'please activate your account .. pls check ur Email', expired: true });
                 }
                 else {
-                    var token = jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: '30s' });
+                    var token = jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: '1h' });
                     res.send({ success: true, message: 'user validated succesfully', token: token })
                 }
 
@@ -498,12 +498,12 @@ module.exports = function (router) {
                 if (err) {
                     res.json({ success: false, message: "password link has expired " })
                 } else {
-                   if(!user){
-                    res.json({ success: false, message: "password link has expired " })
+                    if (!user) {
+                        res.json({ success: false, message: "password link has expired " })
 
-                   }else{
-                    res.json({ success: true, user: user });
-                   }
+                    } else {
+                        res.json({ success: true, user: user });
+                    }
                     // req.decoded = decoded;
                     // next();
                 }
@@ -552,13 +552,13 @@ module.exports = function (router) {
 
     //     });
 
-    
-    router.put('/savePassword', function(req, res) {
+
+    router.put('/savePassword', function (req, res) {
         console.log('put in now');
-       // User.findOne({ username: req.body.username }).select('username email name password resettoken').exec(function(err, user) {
+        // User.findOne({ username: req.body.username }).select('username email name password resettoken').exec(function(err, user) {
         User.findOne({ username: req.body.username }).select('username active email password resettoken name').exec(function (err, user) {
 
-            console.log('put in now   + '+ err + "user is    :  " + user );
+            console.log('put in now   + ' + err + "user is    :  " + user);
             if (err) {
                 // Create an e-mail object that contains the error. Set to automatically send it to myself for troubleshooting.
                 var email = {
@@ -569,7 +569,7 @@ module.exports = function (router) {
                     html: 'The following error has been reported in the MEAN Stack Application:<br><br>' + err
                 };
                 // Function to send e-mail to myself
-                client.sendMail(email, function(err, info) {
+                client.sendMail(email, function (err, info) {
                     if (err) {
                         console.log(err); // If error with sending e-mail, log to console/terminal
                     } else {
@@ -578,15 +578,15 @@ module.exports = function (router) {
                     }
                 });
                 res.json({ success: false, message: 'Something went wrong. This error has been logged and will be addressed by our staff. We apologize for this inconvenience!' });
-            } else { 
-                console.log('put in now req.body.password + '+ req.body.password  );
+            } else {
+                console.log('put in now req.body.password + ' + req.body.password);
                 if (req.body.password === null || req.body.password === '') {
                     res.json({ success: false, message: 'Password not provided' });
                 } else {
                     user.password = req.body.password; // Save user's new password to the user object
                     user.resettoken = false; // Clear user's resettoken 
                     // Save user's new data
-                    user.save(function(err) {
+                    user.save(function (err) {
                         if (err) {
                             res.json({ success: false, message: err });
                         } else {
@@ -599,7 +599,7 @@ module.exports = function (router) {
                                 html: 'Hello<strong> ' + user.name + '</strong>,<br><br>This e-mail is to notify you that your password was recently reset at'
                             };
                             // Function to send e-mail to the user
-                            client.sendMail(email, function(err, info) {
+                            client.sendMail(email, function (err, info) {
                                 if (err) console.log(err); // If error with sending e-mail, log to console/terminal
                             });
                             res.json({ success: true, message: 'Password has been reset!' }); // Return success message
@@ -612,38 +612,75 @@ module.exports = function (router) {
 
     });
 
-        router.use(function (req, res, next) {
-            var token = req.body.token || req.body.query || req.headers['x-access-token'];
-            if (token) {
-                // verify a token symmetric
-                jwt.verify(token, secret, function (err, decoded) {
-                    if (err) { res.json({ success: false, message: " success false token invalid " }) } else {
-                        req.decoded = decoded;
-                        next();
+    router.use(function (req, res, next) {
+        var token = req.body.token || req.body.query || req.headers['x-access-token'];
+        if (token) {
+            // verify a token symmetric
+            jwt.verify(token, secret, function (err, decoded) {
+                if (err) { res.json({ success: false, message: " success false token invalid " }) } else {
+                    req.decoded = decoded;
+                    next();
+                }
+            });
+
+        } else { res.json({ success: false, message: "no token found" }) }
+    });
+
+
+
+    router.post('/me', function (req, res) {
+        res.send(req.decoded);
+    });
+
+    // Route to provide the user with a new token to renew session
+    router.get('/renewToken/:username', function (req, res) {
+        User.findOne({ username: req.params.username }).select('username email').exec(function (err, user) {
+            if (err) throw err;
+            if (!user) {
+                res.json({ success: false, message: "no user found found" })
+            } else {
+                var newToken = jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: '24H' });
+                res.send({ success: true, token: newToken })
+            }
+        });
+    });
+
+
+    router.get('/permission', function (req, res) {
+        User.findOne({ username: req.decoded.username }, function (err, user) {
+            if (err) throw err;
+            if (!user) {
+                res.json({ success: false, message: 'no user found' });
+            } else {
+                res.json({ success: true, permission: user.permission });
+            }
+        });
+    });
+
+    router.get('/management', function (req, res) {
+        User.find({}, function (err, users) {
+            if (err) throw err;
+            User.findOne({ username: req.decoded.username }, function (err, mainUser) {
+                if (err) throw err;
+                if (!mainUser) {
+                    res.json({ success: false, message: 'no user found' });
+
+                } else {
+                    if (mainUser.permission === 'admin' || mainUser.permission === "moderator") {
+                        // user has permitions
+                        if (!users) {
+                            res.json({ success: false, message: ' user  not found' });
+                        } else {
+                            res.json({ success: true, users: users, permission: mainUser.permission });
+                        }
+
+                    } else {
+                        res.json({ success: false, message: 'insufficient permitions' });
+
                     }
-                });
-
-            } else { res.json({ success: false, message: "no token found" }) }
+                }
+            })
         });
-    
-
-
-        router.post('/me', function (req, res) {
-            res.send(req.decoded);
-        });
-
-  // Route to provide the user with a new token to renew session
-    router.get('/renewToken/:username', function(req, res) {
-        User.findOne({ username: req.params.username }).select('username email').exec(function(err, user) {
-        if(err) throw err;
-  if(!user){ 
-       res.json({ success: false, message: "no user found found" })
-  }else{
-       var newToken = jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: '24H' });
-       res.send({ success: true, token: newToken })
-  }
-    })
-})
-
-        return router;
-    }
+    });
+    return router;
+};

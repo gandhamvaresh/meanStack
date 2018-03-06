@@ -20,15 +20,15 @@ angular.module('mainController', ['authServices','userServices'])
                         };
                         var expireTime = self.parseJwt(token); // Save parsed token into variable
                         var timeStamp = Math.floor(Date.now() / 1000); // Get current datetime timestamp
-                        console.log('token     :  '  + timeStamp +'    expired        '+expireTime.exp );
+                        //console.log('token     :  '  + timeStamp +'    expired        '+expireTime.exp );
                         var timeCheck = expireTime.exp - timeStamp; // Subtract to get remaining time of token
-                        console.log('test ' + timeCheck );
+                      //  console.log('test ' + timeCheck );
                         if (timeCheck <= 25) {
-                          console.log('token expired ' );
+                         // console.log('token expired ' );
                             showModal(1); // Open bootstrap modal and let user decide what to do
                             $interval.cancel(interval); // Stop interval
                         }else{
-                            console.log('token not yet expired ' );
+                           // console.log('token not yet expired ' );
                         }
                     }
                 }, 2000);
@@ -62,7 +62,7 @@ angular.module('mainController', ['authServices','userServices'])
               $timeout(function(){
                 if(!app.choiceMade)
                 hideModal();
-                console.log('Logging Out')
+               // console.log('Logging Out')
             }, 4000)
         };
 
@@ -105,8 +105,16 @@ angular.module('mainController', ['authServices','userServices'])
                 Auth.getUser().then(function (data) {
                     app.username = data.data.username;
                     app.email = data.data.email;
+                    User.getPermission().then(function(data){
+                        if(data.data.permission === 'admin' || data.data.permission === 'moderator'){
+                          app.authorized = true;
+                          app.loadme = true;
+                        }else{
+                            app.loadme = true;
+                         }
+                    })
                     // below line shold wait untill all data loads
-                    app.loadme = true;
+                    
                 });
             } else {
                 // when user not found change username and email to '' 

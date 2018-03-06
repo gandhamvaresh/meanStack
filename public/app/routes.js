@@ -113,6 +113,13 @@ var app = angular.module('appRoutes', ['ngRoute'])
                 controllerAs: 'username',
                 authenticated: false
             })
+                .when('/management', {
+                templateUrl: 'app/views/pages/management/management.html',
+                controller: 'managementCtrl',
+                controllerAs: 'management',
+                authenticated: true,
+                permission: ['admin', 'moderator']
+            })
 
             .otherwise({ redirectTo: '/' });
 
@@ -151,16 +158,17 @@ app.run(['$rootScope', 'Auth', '$location', 'User', function($rootScope, Auth, $
                 if (!Auth.isLoggedIn()) {
                     event.preventDefault(); // If not logged in, prevent accessing route
                     $location.path('/'); // Redirect to home instead
-                } else if (next.$$route.permission) {
+                } else if(next.$$route.permission) {
                     // Function: Get current user's permission to see if authorized on route
                     User.getPermission().then(function(data) {
-                        // Check if user's permission matches at least one in the array
-                        if (next.$$route.permission[0] !== data.data.permission) {
+                        // Check if user's permission matches at least one in the 
+                        console.log(data); 
+                         if (next.$$route.permission[0] !== data.data.permission) {
                             if (next.$$route.permission[1] !== data.data.permission) {
                                 event.preventDefault(); // If at least one role does not match, prevent accessing route
                                 $location.path('/'); // Redirect to home instead
-                            }
-                        }
+                           }
+                     }
                     });
                 }
             } else if (next.$$route.authenticated === false) {

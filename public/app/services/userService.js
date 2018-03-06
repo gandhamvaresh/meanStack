@@ -48,7 +48,16 @@ userFactory.savePassword = function(regData) {
 //User.renewSession(username)
 	userFactory.renewSession = function(username){
    return $http.get('/api/renewToken/' + username);
-		
 	}
+// User.getPermission
+	userFactory.getPermission = function(){
+   return $http.get('/api/permission');
+	}	
+// User.getUsers
+userFactory.getUsers = function(){
+	return $http.get('/api/management');
+	 }
+
+	
 	return userFactory;
 });
