@@ -31,6 +31,7 @@
     <script type="text/javascript" src='app/controllers/userCtrl.js'></script>
     <script type="text/javascript" src='app/controllers/mainCtrl.js'></script>
     <script type="text/javascript" src="app/controllers/emailCtrl.js"></script>
+    <script type="text/javascript" src="app/controllers/managementCtrl.js"></script>
 
     <!-- Angular Services files  -->
     <script type="text/javascript" src='app/services/userService.js'></script>
@@ -64,6 +65,9 @@
                 </li>
                 <li class="nav-item" ng-show="main.isLoggedIn">
                     <a class="nav-link " href='#' ng-click="main.logout();">Logout</a>
+                </li>
+                <li class="nav-item" ng-show="main.isLoggedIn && main.authorized">
+                    <a class="nav-link " href='/management'>Management</a>
                 </li>
                 <li class="nav-item" ng-show="main.isLoggedIn">
                     <a class="nav-link " href='/profile'> hello: {{ main.username }}</a>
