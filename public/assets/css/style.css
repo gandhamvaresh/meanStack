@@ -59,6 +59,10 @@ main 					{
 	padding-top:30px;	
 }
 
+.showmore{
+  display: inline;
+}
+
 /* HEADER 
 ===================== */
 header .navbar 		{ 

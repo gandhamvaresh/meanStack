@@ -48,16 +48,27 @@ userFactory.savePassword = function(regData) {
 //User.renewSession(username)
 	userFactory.renewSession = function(username){
    return $http.get('/api/renewToken/' + username);
-	}
+	};
 // User.getPermission
 	userFactory.getPermission = function(){
    return $http.get('/api/permission');
-	}	
-// User.getUsers
+	};	
+// User.getUsers()   All users 
 userFactory.getUsers = function(){
 	return $http.get('/api/management');
-	 }
+	 };
+// User.getUser(id)  particular user with ID
+  // Get user to then edit
+  userFactory.getUser = function(id) {
+	return $http.get('/api/edit/' + id);
+};
 
+	// User.deleteUser(username) 
+userFactory.deleteUser = function(username){
+	return $http.delete('/api/management/'+ username)
+};
 	
+
+
 	return userFactory;
 });
