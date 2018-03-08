@@ -67,7 +67,11 @@ userFactory.getUsers = function(){
 userFactory.deleteUser = function(username){
 	return $http.delete('/api/management/'+ username)
 };
-	
+	// User.editUser(username) 
+	userFactory.editUser = function(id){
+		return $http.put('/api/edit/', id)
+	};
+
 
 
 	return userFactory;
