@@ -1,5 +1,5 @@
 angular.module('managementController', [])
-    .controller('managementCtrl', function (User) {
+    .controller('managementCtrl', function (User, $scope) {
         var app = this;
 
         app.loading = true;
@@ -7,6 +7,7 @@ angular.module('managementController', [])
         app.editAccess = false;
         app.deleteAccess = false;
         app.limit = 4;
+        app.searchLimit = 0;
 
         function getUsers() {
             User.getUsers().then(function (data) {
@@ -60,6 +61,43 @@ angular.module('managementController', [])
             })
 
         };
+
+        app.search = function (searchKeyword, number) {
+            if (searchKeyword) {
+                if (searchKeyword.length > 0) {
+                   app.limit = 0;
+                   $scope.searchFilter = searchKeyword;
+                   app.limit = number;
+                } else {
+                    $scope.searchFilter = undefined;
+                    app.limit = 0;
+                }
+            } else {
+                $scope.searchFilter = undefined;
+                app.limit = 0;
+                $scope.searchKeyword = undefined;
+                $scope.searchFilter = undefined;
+                app.showMoreError = false;
+            }
+        };
+
+        app.clear = function() {
+         $scope.number = 'Clear';
+         app.limit = 0;
+         $scope.searchKeyword = undefined; // Clear the search word
+         $scope.searchFilter = undefined; // Clear the search filter
+         app.showMoreError = false; // Clear any errors
+
+        } 
+
+        app.advancedSeach = function(searchByUsername,searchByEmail,searchByName){
+          if(searchByUsername || searchByEmail || searchByName){
+
+          }
+        };
+        app.sortOrder = function(order){
+            app.sort = order;
+        }
     })
     .controller('editCtrl', function ($scope, $routeParams, User, $timeout) {
         var app = this;
@@ -132,14 +170,14 @@ angular.module('managementController', [])
             app.phase2 = false;
             app.phase3 = false;
             app.phase4 = true;
-           
+
 
             app.disableUser = false;
             app.disableModerator = false;
             app.disableAdmin = false;
             app.errorMsg = false;
 
-            if($scope.newPermmision === 'user') {
+            if ($scope.newPermmision === 'user') {
                 app.disableUser = true;
             } else if ($scope.newPermmision === 'moderator') {
                 app.disableModerator = true;
@@ -237,47 +275,49 @@ angular.module('managementController', [])
 
         app.updatePermmisions = function (newPermmision) {
             app.errorMsg = false;
-          
+
             app.disableUser = true;
             app.disableModerator = true;
             app.disableAdmin = true;
 
             var userObject = {};
-        
-                userObject._id = $scope.currentUser;
-                userObject.permission = $scope.newPermmision;
 
-                User.editUser(userObject).then(function (data) {
-                    if (data.data.success) {
-                        app.successMsg = data.data.message;
-                        $timeout(function () {
+            userObject._id = $scope.currentUser;
+            userObject.permission = $scope.newPermmision;
 
-                            app.successMsg = false;
+            User.editUser(userObject).then(function (data) {
+                if (data.data.success) {
+                    app.successMsg = data.data.message;
+                    $timeout(function () {
 
-                            if(newPermmision === 'user') {
-                                $scope.newPermmision = 'user';
-                                app.disableUser = true;
-                                app.disableModerator = false;
-                                app.disableAdmin = false;
-                            } else if (newPermmision === 'moderator') {
-                                $scope.newPermmision = 'moderator';
-                                app.disableModerator = true;
-                                app.disableUser = false;
-                                app.disableAdmin = false;
-                            } else if (newPermmision === 'admin') {
-                                $scope.newPermmision = 'admin';
-                                app.disableAdmin = true;
-                                app.disableUser = false;
-                                app.disableModerator = false;
-                            }
+                        app.successMsg = false;
+
+                        if (newPermmision === 'user') {
+                            $scope.newPermmision = 'user';
+                            app.disableUser = true;
+                            app.disableModerator = false;
+                            app.disableAdmin = false;
+                        } else if (newPermmision === 'moderator') {
+                            $scope.newPermmision = 'moderator';
+                            app.disableModerator = true;
+                            app.disableUser = false;
+                            app.disableAdmin = false;
+                        } else if (newPermmision === 'admin') {
+                            $scope.newPermmision = 'admin';
+                            app.disableAdmin = true;
+                            app.disableUser = false;
+                            app.disableModerator = false;
+                        }
 
 
-                        }, 2000)
-                    } else {
-                        app.errorMsg = data.data.message;
-                        app.disabled = false;
-                    }
-                });
-         
+                    }, 2000)
+                } else {
+                    app.errorMsg = data.data.message;
+                    app.disabled = false;
+                }
+            });
         };
+
+       
+
     });
