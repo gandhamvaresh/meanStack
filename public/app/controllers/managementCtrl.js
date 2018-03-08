@@ -90,9 +90,18 @@ angular.module('managementController', [])
 
         } 
 
-        app.advancedSeach = function(searchByUsername,searchByEmail,searchByName){
+        app.advancedSearch = function(searchByUsername,searchByEmail,searchByName){
           if(searchByUsername || searchByEmail || searchByName){
-
+               $scope.advancedSearchFilter = {};
+               if(searchByUsername){ 
+                $scope.advancedSearchFilter.username= searchByUsername;
+               }if(searchByEmail){
+                $scope.advancedSearchFilter.email = searchByEmail;
+               }
+               if(searchByName){
+                $scope.advancedSearchFilter.name = searchByName;
+               }
+               app.searchLimit = undefined;
           }
         };
         app.sortOrder = function(order){
