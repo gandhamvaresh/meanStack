@@ -7,23 +7,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <link rel="icon" href="assets/img/demo_icon.gif" type="image/gif" sizes="16x16">
     <!-- <link rel="icon" href="../../../../favicon.ico"> -->
-    <title>Jumbotron Template for Bootstrap</title>
+    <title>MeanStack_AJS_1</title>
     <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> 
     <link href="assets/css/animate.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"> -->
     <!-- Angular Core Files  -->
-    <script src='assets/js/angular.min.js' type="text/javascript"></script>
+    <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js' type="text/javascript"></script> -->
     <!-- <script src='assets/js/angular-routes.min.js' type="text/javascript"></script> -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular-route.min.js"></script>
-    <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.0/angular-animate.js'></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular-route.min.js"></script>
+    <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular-animate.js'></script> -->
+    <script src="assets/js/angular.js"></script>
+    <script src="assets/js/angular-route.js"></script>
+    <script src="assets/js/angular-animate.js"></script>
     <!-- main Angular Files  -->
     <script type="text/javascript" src='app/app.js'></script>
     <script type="text/javascript" src='app/routes.js'></script>
     <!-- Angular Controllers Files  -->
     <script type="text/javascript" src='app/controllers/userCtrl.js'></script>
     <script type="text/javascript" src='app/controllers/mainCtrl.js'></script>
+    <script type="text/javascript" src="app/controllers/emailCtrl.js"></script>
+    <script type="text/javascript" src="app/controllers/managementCtrl.js"></script>
+
     <!-- Angular Services files  -->
     <script type="text/javascript" src='app/services/userService.js'></script>
     <script type="text/javascript" src='app/services/authServices.js'></script>
@@ -31,10 +40,11 @@
     <!--     <link href="jumbotron.css" rel="stylesheet">   
 
  -->
+
 </head>
 
 <body ng-app='userApp' ng-controller='mainCtrl as main' ng-show='main.loadme' ng-clock>
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <nav class=" navbar-expand-md navbar-dark fixed-top bg-dark">
         <a class="navbar-brand" href="#">Navbar</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -56,6 +66,9 @@
                 <li class="nav-item" ng-show="main.isLoggedIn">
                     <a class="nav-link " href='#' ng-click="main.logout();">Logout</a>
                 </li>
+                <li class="nav-item" ng-show="main.isLoggedIn && main.authorized">
+                    <a class="nav-link " href='/management'>Management</a>
+                </li>
                 <li class="nav-item" ng-show="main.isLoggedIn">
                     <a class="nav-link " href='/profile'> hello: {{ main.username }}</a>
                 </li>
@@ -74,34 +87,65 @@
             </form>
         </div>
     </nav>
+    <br />
     <main role="main">
         <!-- Main jumbotron for a primary marketing message or call to action -->
         <div class="jumbotron">
-            <div class="container">
+            <div class="">
                 <h1 class="display-3">Hello, world!</h1>
                 <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
                 <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
             </div>
         </div>
+        <br>
         <div class="container">
             <!-- Example row of columns -->
             <div ng-view> </div>
+                     <!-- Modal -->
+                <div class="modal fade" id="myModal" role="dialog">
+                  <div class="modal-dialog">
+                  
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        
+                        <h4 class="modal-title">{{main.modelHeader}}</h4>
+                        <button type="button" ng-click="main.endSession();" class="close" data-dismiss="modal">&times;</button>
+                      </div>
+                      <div class="modal-body">
+                        <p>{{main.modelBody}}</p>
+                        <div ng-show="main.hideButtons" class="dizzy-gillespie"></div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" ng-hide="main.hideButtons" ng-click="main.renewSession();"class="btn btn-primary" data-dismiss="modal">Yes</button>
+                        <button type="button" ng-hide="main.hideButtons" ng-click="main.endSession();" class="btn btn-danger" data-dismiss="modal">No</button>
+                      </div>
+                    </div>
+                    
+                  </div>
+                </div>
             <hr>
         </div>
         <!-- /container -->
     </main>
+  <br>
+
     <footer class="container">
         <p>&copy; Company 2017</p>
     </footer>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script>
     window.jQuery || document.write('<script src="assets/js/jquery.min.js"><\/script>')
-    </script>
+    </script> -->
     <!-- <script src="../../../../assets/js/vendor/popper.min.js"></script> -->
-    <script src="assets/js/bootstrap.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
 </body>
 
 </html>
